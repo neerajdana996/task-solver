@@ -29,7 +29,7 @@ export default function TaskPanel({ children }: {
         <Transition.Root show={true} as={Fragment}>
             <Dialog as="div" className="relative z-50" onClose={onClose}>
                 <div className="fixed inset-0" />
-
+                <div className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
                 <div className="fixed inset-0 overflow-hidden">
                     <div className="absolute inset-0 overflow-hidden">
                         <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10 sm:pl-16">
@@ -42,9 +42,11 @@ export default function TaskPanel({ children }: {
                                 leaveFrom="translate-x-0"
                                 leaveTo="translate-x-full"
                             >
+
                                 <Dialog.Panel className="pointer-events-auto w-screen max-w-4xl">
                                     {children}
                                 </Dialog.Panel>
+
                             </Transition.Child>
                         </div>
                     </div>
