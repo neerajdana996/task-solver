@@ -6,6 +6,7 @@ module.exports = {
     './components/**/*.{ts,tsx,js,jsx}',
     './app/**/*.{ts,tsx,js,jsx}',
     './src/**/*.{ts,tsx,js,jsx}',
+    "./node_modules/react-tailwindcss-select/dist/index.esm.js"
   ],
   prefix: "",
   theme: {

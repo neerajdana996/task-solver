@@ -12,6 +12,23 @@ import { logto } from "~/services/authentication";
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
 }
+const status = [{
+    label: "All",
+    value: "All"
+},
+{
+    label: "In Progress",
+    value: "InProgress"
+},
+{
+    label: "Completed",
+    value: "Completed"
+},
+{
+    label: "Not Started",
+    value: "NotStarted"
+
+}]
 export const loader: LoaderFunction = async ({ request, params }: LoaderFunctionArgs) => {
     const context = await logto.getContext({ getAccessToken: false, fetchUserInfo: true })(
         request
@@ -21,8 +38,12 @@ export const loader: LoaderFunction = async ({ request, params }: LoaderFunction
             tags: true
         }
     })
+    const tags = await prisma.tag.findMany().then((tags) => tags.map((tag) => ({
+        label: tag.name,
+        value: tag.id
+    })));
     console.log(context);
-    return json({ context, tasks });
+    return json({ context, tasks, status, tags });
 }
 const statuses: any = {
     Complete: 'text-green-700 bg-green-50 ring-green-600/20',
