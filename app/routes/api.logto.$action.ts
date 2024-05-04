@@ -11,7 +11,7 @@ export const loader = logto.handleAuthRoutes({
   },
   "sign-in-callback": {
     path: "/api/logto/callback",
-    redirectBackTo: "/user",
+    redirectBackTo: "/task",
   },
   "sign-out": {
     path: "/api/logto/sign-out",

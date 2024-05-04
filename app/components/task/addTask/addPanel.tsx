@@ -22,7 +22,7 @@ export default function TaskPanel({ children }: {
 }) {
     const navigation = useNavigate()
     const onClose = () => {
-        navigation('/dashboard')
+        navigation('/task')
     }
 
     return (

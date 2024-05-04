@@ -12,26 +12,46 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
 model User {
-  id        Int      @id @default(autoincrement())
-  name      String
-  email     String   @unique
-  isEmailVerified Boolean @default(false)
-  role      String   @default("user")
-  userEmailToken Json?
-  password  String
-  uniqueKey String   @unique
+  id        String   @id @default(cuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  UserActivity UserActivity[]
+  email     String   @unique
+  name      String
+  password  String
+  onboarded Boolean @default(false)
+
 }
 
-model UserActivity {
+model Task {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  user   User  @relation(fields: [userId], references: [id])
-  userId Int
-  activityType String
-  activityData Json
+  userId String
+  title String
+  description Json
+  slug String @unique
+  status String @default("InProgress") 
+  tags Tag[]
+  
+}
+
+model Tag {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  slug String @unique
+  tasks Task[]
+  UserTag UserTag[]
+}
+
+model UserTag {
+  id        Int      @id @default(autoincrement())
+  userId String
+  tagId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Tag Tag @relation(fields: [tagId], references: [id])
 }

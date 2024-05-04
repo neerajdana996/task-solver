@@ -13,13 +13,9 @@ export const loader: LoaderFunction = async ({ request }) => {
     request
   );
 
-  // if (!context.isAuthenticated) {
-  //   return redirect("/api/logto/sign-in");
-  // }
 
   return json<LoaderResponse>({ context });
-};
-
+}
 export default function _index() {
   const data = useLoaderData<LoaderResponse>();
 

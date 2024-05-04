@@ -1,12 +1,30 @@
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import { useNavigate } from "@remix-run/react";
-export default function Addtask() {
+import { Task } from "@prisma/client";
+import { Form, useNavigate } from "@remix-run/react";
+import ListBox from "~/components/shared/TagInput";
+import ContentBodyEditor from "./contentEditor";
+export default function Addtask({ task }: { task: Task }) {
     const navigation = useNavigate()
+
     const onClose = () => {
-        navigation('/dashboard')
+        navigation('/task')
     }
-    return <form className="flex h-full flex-col divide-y divide-gray-200 bg-white shadow-xl">
+    return <Form
+        method={'post'}
+        onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault()
+            }
+        }}
+        action={
+            task?.id ? `/task/edit/${task?.id}` : `/task/create`
+        }
+        key={Math.random()}
+        className="flex h-full flex-col divide-y divide-gray-200 bg-white shadow-xl">
         <div className="h-0 flex-1 overflow-y-auto">
+            <input type="hidden" name="id" value={task?.id} />
+            <input type="hidden" name="slug" value={task?.slug} />
+
             <div className="bg-gray-700 px-4 py-6 sm:px-6">
                 <div className="flex items-center justify-between">
                     <h1 className="text-base font-semibold leading-6 text-white">
@@ -29,6 +47,7 @@ export default function Addtask() {
             <div className="flex flex-1 flex-col justify-between">
                 <div className="divide-y divide-gray-200 px-4 sm:px-6">
                     <div className="space-y-6 pb-5 pt-6">
+
                         <div>
                             <label
                                 htmlFor="project-name"
@@ -38,13 +57,22 @@ export default function Addtask() {
                             </label>
                             <div className="mt-2">
                                 <input
+                                    defaultValue={task?.title}
                                     type="text"
-                                    name="project-name"
-                                    id="project-name"
+                                    name="title"
+                                    id="title"
                                     className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6"
                                 />
                             </div>
                         </div>
+                        <ListBox
+                            label="Task Tags"
+                            name="tags"
+                            key={Math.random()}
+                            type="text"
+                            placeholder="Add Tags"
+                            value={(task as any)?.tags?.map((tag) => tag?.name)}
+                        />
                         <div>
                             <label
                                 htmlFor="description"
@@ -53,13 +81,15 @@ export default function Addtask() {
                                 Task Description
                             </label>
                             <div className="mt-2">
-                                <textarea
-                                    id="description"
-                                    name="description"
-                                    rows={25}
-                                    className="block w-full rounded-md border-0 py-1.5
-                                     text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-600 sm:text-sm sm:leading-6"
-                                    defaultValue={''}
+                                <ContentBodyEditor
+                                    label={' Task Description'}
+                                    name={'description'}
+                                    defaultValue={task?.description}
+                                    value={task?.description}
+                                    placeholder={'placeholder'}
+                                    id={'description'}
+                                    onValueChange={() => { }}
+
                                 />
                             </div>
                         </div>
@@ -85,5 +115,5 @@ export default function Addtask() {
                 Save
             </button>
         </div>
-    </form>
+    </Form>
 }
