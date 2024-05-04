@@ -2,6 +2,52 @@ import { prisma } from "../db.server";
 import { TagsService } from "./tags.server";
 
 export class Taskservice {
+    static getFilteredTasks(appliedFilters: {
+        tagIds: number[];
+        status: string[];
+        author: never[];
+    }) {
+
+        const condition: {
+            status?: any,
+            tags?: any,
+            userId?: any
+        } = {}
+        if (!appliedFilters.status?.includes("All")) {
+            condition['status'] = {
+                in: appliedFilters.status
+            }
+        }
+        if (appliedFilters.tagIds.length) {
+            condition['tags'] = {
+                some: {
+                    id: {
+                        in: appliedFilters.tagIds
+                    }
+                }
+            }
+        }
+        if (appliedFilters.author.length) {
+            condition['userId'] = {
+                in: appliedFilters.author
+            }
+        }
+        return prisma.task.findMany({
+            where: condition,
+            select: {
+                id: true,
+                title: true,
+                description: true,
+                slug: true,
+                tags: {
+                    select: {
+                        name: true
+                    }
+                }
+            }
+        });
+
+    }
     getTaskForEdit(id: string, userId: string) {
         return prisma.task.findFirst({
             where: {

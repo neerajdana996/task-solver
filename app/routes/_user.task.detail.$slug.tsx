@@ -27,11 +27,16 @@ export const loader: LoaderFunction = async ({ request, params }: LoaderFunction
 export default function TaskDetails({ }) {
     const { slug, task } = useLoaderData<typeof loader>();
     return (
-        <div className="flex flex-col border rounded-md p-4 w-full bg-white shadow-lg">
+        <div className="flex flex-col  dark:bg-gray-900 rounded-md p-4 px-16 w-full bg-white  ">
             <TaskDetailHeading task={task} />
-            <div className='py-8 prose prose-lg'
-                dangerouslySetInnerHTML={{ __html: task.description }
-                } />
+            <div className=' overflow-y-auto scrollbar-thin 
+           
+           scrollbar scrollbar-thumb-gray-500 scrollbar-track-gray-100  overflow-y-scroll max-h-screen'
+            >
+                <div className='my-8 prose prose-lg mx-auto '
+                    dangerouslySetInnerHTML={{ __html: task.description }
+                    } />
+            </div>
         </div>
     )
 }

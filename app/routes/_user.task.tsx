@@ -8,6 +8,7 @@ import moment from 'moment';
 import { Fragment } from 'react/jsx-runtime';
 import TaskHeading from '~/components/task/taskHeading';
 import { prisma } from '~/server/db.server';
+import { Taskservice } from '~/server/service/task.server';
 import { logto } from "~/services/authentication";
 function classNames(...classes) {
     return classes.filter(Boolean).join(' ')
@@ -30,20 +31,47 @@ const status = [{
 
 }]
 export const loader: LoaderFunction = async ({ request, params }: LoaderFunctionArgs) => {
+
+
+
     const context = await logto.getContext({ getAccessToken: false, fetchUserInfo: true })(
         request
     );
-    const tasks = await prisma.task.findMany({
-        include: {
-            tags: true
-        }
-    })
     const tags = await prisma.tag.findMany().then((tags) => tags.map((tag) => ({
         label: tag.name,
         value: tag.id
     })));
+    const userTags = await prisma.userTag.findMany({
+        where: {
+            userId: context?.userInfo?.sub
+        },
+        select: {
+            Tag: {
+                select: {
+                    name: true,
+                    id: true
+                }
+            }
+        }
+    })
     console.log(context);
-    return json({ context, tasks, status, tags });
+    const queryParams = new URLSearchParams(request.url.split('?')[1]);
+    const paramsObject = Object.fromEntries(queryParams.entries());
+    const appliedFilters = {
+        tagIds: userTags.map((tag) => tag.Tag.id),
+        status: ['InProgress'],
+        author: []
+    }
+    if (paramsObject.taskTags) {
+        appliedFilters.tagIds = paramsObject.taskTags.split(',').map((tagId) => parseInt(tagId));
+    }
+    if (paramsObject.taskStatus) {
+        appliedFilters.status = paramsObject.taskStatus.split(',');
+    }
+
+    const tasks = await Taskservice.getFilteredTasks(appliedFilters)
+
+    return json({ context, tasks, status, tags, userTags, appliedFilters });
 }
 const statuses: any = {
     Complete: 'text-green-700 bg-green-50 ring-green-600/20',
@@ -54,11 +82,15 @@ export default function Userdashboard({ children }) {
     const { context, tasks } = useLoaderData();
     return (
         <> <TaskHeading />
-            <div className="flex  py-2 space-x-2">
+            <div className="flex  py-2 space-x-2 
+            ">
 
-                <div className="flex flex-col border p-4 w-96 bg-white">
+                <div className="flex flex-col  rounded-lg p-4 w-96 
+              bg-gradient-to-r from-gray-50 to-gray-100
+              h-full
+            ">
 
-                    <ul className="space-y-4 divide-y divide-gray-100 ">
+                    <ul className="space-y-4 divide-y divide-gray-300 ">
                         {tasks.map((project) => (
                             <Link
                                 to={`/task/detail/${project.slug}`}
