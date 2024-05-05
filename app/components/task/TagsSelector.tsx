@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 export default function TagsSelector({ tags, userTags }: { tags: any[], userTags: any[] }) {
     console.log(tags, userTags)
-    const [selectedTags, setSelectedTags] = useState<Tag[]>();
+    const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
     useEffect(() => {
         if (userTags?.length && tags?.length) {
             setSelectedTags(tags.filter(tag => userTags?.some(userTag => userTag.tagId === tag.id)))
@@ -26,6 +26,7 @@ export default function TagsSelector({ tags, userTags }: { tags: any[], userTags
                     key={tag.id}
                     type="button"
                     onClick={() => {
+
                         if (selectedTags?.includes(tag)) {
                             setSelectedTags(selectedTags.filter(a => a.id !== tag.id))
                         } else {
