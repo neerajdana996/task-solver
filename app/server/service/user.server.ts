@@ -23,9 +23,9 @@ export class UserService {
                     },
                     password: user?.password || "",
                 }
-            }).then(() => true);
+            }).then(() => false);
         }
-        return userData?.onboarded || true;
+        return userData?.onboarded;
     }
     static async UpdateUserTags(userId: any, tags: number[]) {
         const userTags = await prisma.userTag.findMany({
