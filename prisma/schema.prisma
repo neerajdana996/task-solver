@@ -21,6 +21,10 @@ model User {
   name      String
   password  String
   onboarded Boolean @default(false)
+  image Json?
+  tasks Task[]
+  tags UserTag[]
+  
 
 }
 
@@ -34,6 +38,7 @@ model Task {
   slug String @unique
   status String @default("InProgress") 
   tags Tag[]
+  User User @relation(fields: [userId], references: [id])
   
 }
 
@@ -54,4 +59,5 @@ model UserTag {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   Tag Tag @relation(fields: [tagId], references: [id])
+  User User @relation(fields: [userId], references: [id])
 }

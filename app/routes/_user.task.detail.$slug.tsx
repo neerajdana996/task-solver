@@ -6,7 +6,8 @@ import TaskPanel from '~/components/task/addTask/addPanel';
 import TaskDetail from '~/components/task/taskdetail';
 import { prisma } from '~/server/db.server';
 export const loader: LoaderFunction = async ({ request, params }: LoaderFunctionArgs) => {
-    const slug = params.slug;
+    const slug = encodeURIComponent(params.slug);
+    console.log(slug);
     const task = await prisma.task.findUnique({
         where: {
             slug: slug

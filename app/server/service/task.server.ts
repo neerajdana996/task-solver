@@ -43,6 +43,15 @@ export class Taskservice {
                     select: {
                         name: true
                     }
+                },
+                User: {
+                    select: {
+                        name: true,
+                        image: true,
+                        id: true,
+
+                    }
+
                 }
             }
         });
@@ -95,7 +104,7 @@ export class Taskservice {
         userId: string,
         tags: string
     }) {
-        const slug = title.toLowerCase().split(" ").join("-");
+        const slug = encodeURIComponent(title.toLowerCase().split(" ").join("-"));
         const uniqueSlug = await this.getUniqueSlug(slug);
         const tagIds = await TagsService.processTags(tags);
         return prisma.task.create({
@@ -137,7 +146,7 @@ export class Taskservice {
         if (task?.userId !== userId) {
             throw new Error("Unauthorized");
         }
-        const slug = title.toLowerCase().split(" ").join("-");
+        const slug = encodeURIComponent(title.toLowerCase().split(" ").join("-"));
         const uniqueSlug = await this.getUniqueSlug(slug, parseInt(id));
         const tagIds = await TagsService.processTags(tags);
         return prisma.task.update({

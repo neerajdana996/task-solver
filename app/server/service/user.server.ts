@@ -18,11 +18,14 @@ export class UserService {
                     onboarded: false,
                     email: user?.email,
                     name: user?.name,
+                    image: {
+                        url: user?.picture
+                    },
                     password: user?.password || "",
                 }
-            }).then(() => false);
+            }).then(() => true);
         }
-        return userData?.onboarded;
+        return userData?.onboarded || true;
     }
     static async UpdateUserTags(userId: any, tags: number[]) {
         const userTags = await prisma.userTag.findMany({

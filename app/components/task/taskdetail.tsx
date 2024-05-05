@@ -21,7 +21,7 @@ export default function TaskDetail({ task }: { task: Task }) {
                 <div className=' '
                 >
                     <div className='my-8 prose prose-lg mx-auto '
-                        dangerouslySetInnerHTML={{ __html: task.description }
+                        dangerouslySetInnerHTML={{ __html: task?.description }
                         } />
                 </div>
 
